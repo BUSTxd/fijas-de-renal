@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📊 Análisis Banqueo Renal – Aparato Excretor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0b0f1a;
+    --surface: #111827;
+    --card: #1a2235;
+    --border: #1f2d45;
+    --accent: #3b82f6;
+    --gold: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --purple: #8b5cf6;
+    --teal: #14b8a6;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --star: #fbbf24;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* ── HEADER ── */
+  .hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 32px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content:'';
+    position:absolute;
+    top:-60px;left:50%;transform:translateX(-50%);
+    width:600px;height:300px;
+    background: radial-gradient(ellipse, rgba(59,130,246,0.15) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero h1 { font-size: 2.4rem; font-weight: 800; letter-spacing: -1px; }
+  .hero h1 span { color: var(--accent); }
+  .hero p { color: var(--muted); margin-top: 8px; font-size: 0.95rem; }
+  .badge-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:20px; }
+  .badge {
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+  }
+  .badge-blue  { background: rgba(59,130,246,0.15); border-color:rgba(59,130,246,0.4); color:#93c5fd; }
+  .badge-gold  { background: rgba(245,158,11,0.15); border-color:rgba(245,158,11,0.4); color:#fcd34d; }
+  .badge-green { background: rgba(16,185,129,0.15); border-color:rgba(16,185,129,0.4); color:#6ee7b7; }
+  .badge-purple{ background: rgba(139,92,246,0.15); border-color:rgba(139,92,246,0.4); color:#c4b5fd; }
+
+  /* ── NAV TABS ── */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(11,15,26,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; overflow-x: auto; gap: 2px;
+    padding: 8px 16px;
+  }
+  .nav button {
+    white-space: nowrap;
+    background: none; border: none;
+    color: var(--muted); cursor: pointer;
+    padding: 8px 16px; border-radius: 8px;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.8rem; font-weight: 600;
+    transition: all 0.2s;
+  }
+  .nav button:hover { background: var(--card); color: var(--text); }
+  .nav button.active { background: var(--accent); color: #fff; }
+
+  /* ── SECTIONS ── */
+  .section { display: none; padding: 32px; max-width: 1200px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
+  h2 .icon { margin-right: 8px; }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 24px 0 12px; color: #93c5fd; }
+  .subtitle { color: var(--muted); margin-bottom: 24px; font-size: 0.88rem; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-card .num { font-size: 2.4rem; font-weight: 800; color: var(--accent); }
+  .stat-card .label { color: var(--muted); font-size: 0.8rem; margin-top: 4px; }
+
+  /* ── TABLE ── */
+  .tbl-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: #1e293b;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  tbody tr { border-top: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:hover { background: rgba(59,130,246,0.04); }
+  tbody td { padding: 12px 16px; font-size: 0.87rem; }
+  .pct-bar {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .bar {
+    height: 6px; border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--purple));
+    min-width: 4px;
+  }
+  .pct-txt { font-size: 0.78rem; color: var(--muted); font-family: 'JetBrains Mono'; }
+
+  /* ── PRIORITY TAGS ── */
+  .tag-high   { background: rgba(245,158,11,0.2);  color:#fcd34d; border:1px solid rgba(245,158,11,0.4);  padding:2px 8px; border-radius:4px; font-size:0.72rem; font-weight:700; }
+  .tag-rep    { background: rgba(239,68,68,0.15);  color:#fca5a5; border:1px solid rgba(239,68,68,0.3);   padding:2px 8px; border-radius:4px; font-size:0.72rem; font-weight:700; }
+  .tag-fis    { background: rgba(139,92,246,0.15); color:#c4b5fd; border:1px solid rgba(139,92,246,0.3); padding:2px 8px; border-radius:4px; font-size:0.72rem; font-weight:700; }
+  .tag-ok     { background: rgba(16,185,129,0.15); color:#6ee7b7; border:1px solid rgba(16,185,129,0.3); padding:2px 8px; border-radius:4px; font-size:0.72rem; font-weight:700; }
+  .star { color: var(--star); }
+
+  /* ── RANKING LIST ── */
+  .rank-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: transform 0.15s;
+  }
+  .rank-item:hover { transform: translateX(4px); }
+  .rank-num {
+    font-size: 1.4rem; font-weight: 800;
+    color: var(--muted);
+    min-width: 36px; text-align: center;
+  }
+  .rank-num.top3 { color: var(--gold); }
+  .rank-content { flex: 1; }
+  .rank-title { font-weight: 600; }
+  .rank-sub { color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+  .rank-score {
+    font-family: 'JetBrains Mono';
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--accent);
+    min-width: 60px;
+    text-align: right;
+  }
+
+  /* ── EXAM QUESTIONS ── */
+  .q-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 14px;
+  }
+  .q-block.priority {
+    border-color: rgba(245,158,11,0.4);
+    background: linear-gradient(135deg, #1a2235, rgba(245,158,11,0.04));
+  }
+  .q-header { display:flex; align-items:flex-start; gap:12px; margin-bottom:12px; }
+  .q-num {
+    min-width: 34px; height: 34px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .q-num.gold { background: var(--gold); color:#000; }
+  .q-text { font-weight: 600; font-size: 0.95rem; line-height: 1.5; }
+  .options { list-style: none; margin: 12px 0 8px; display: flex; flex-direction: column; gap: 6px; }
+  .options li {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 0.87rem;
+    transition: border-color 0.2s;
+    cursor: default;
+  }
+  .options li.correct {
+    background: rgba(16,185,129,0.12);
+    border-color: rgba(16,185,129,0.5);
+    color: #6ee7b7;
+    font-weight: 600;
+  }
+  .explanation {
+    font-size: 0.83rem;
+    color: #94a3b8;
+    border-left: 3px solid var(--accent);
+    padding-left: 12px;
+    margin-top: 10px;
+    line-height: 1.6;
+  }
+  .q-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+
+  /* ── FISIOLOGIA SUBTEMAS ── */
+  .fis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .fis-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .fis-card.priority { border-color: rgba(245,158,11,0.5); }
+  .fis-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
+  .fis-count {
+    font-size: 1.6rem; font-weight: 800; color: var(--purple);
+  }
+  .fis-years { color: var(--muted); font-size: 0.75rem; margin-top: 4px; }
+
+  /* ── PREDICTION ── */
+  .pred-item {
+    display: flex; gap: 16px; align-items: flex-start;
+    padding: 16px 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+  .pred-rank {
+    font-size: 2rem; font-weight: 800; color: var(--gold);
+    min-width: 44px;
+  }
+  .pred-body { flex: 1; }
+  .pred-title { font-weight: 700; font-size: 1rem; }
+  .pred-why { color: var(--muted); font-size: 0.83rem; margin-top: 4px; }
+  .pred-prob {
+    min-width: 70px;
+    text-align: right;
+    font-family: 'JetBrains Mono';
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  .prob-high { color: #ef4444; }
+  .prob-mid  { color: var(--gold); }
+  .prob-low  { color: var(--green); }
+
+  /* divider */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+  /* Alert */
+  .alert {
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.4);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 0.88rem;
+    color: #fcd34d;
+  }
+  .alert strong { font-weight: 700; }
+
+  /* scroll reveal helper */
+  .scroll-fade { opacity:0; transform:translateY(16px); transition: opacity 0.4s, transform 0.4s; }
+  .scroll-fade.visible { opacity:1; transform:none; }
+
+  @media(max-width:640px) {
+    .hero h1 { font-size: 1.6rem; }
+    .section { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HERO ═══════════ -->
+<div class="hero">
+  <h1>📊 Análisis <span>Banqueo Renal</span></h1>
+  <p>Aparato Excretor · Análisis Estadístico Multi-año · Predicción Examen 2025</p>
+  <div class="badge-row">
+    <span class="badge badge-gold">★ Prioridad 2024 (70%)</span>
+    <span class="badge badge-blue">6 Años Analizados</span>
+    <span class="badge badge-green">~400+ Preguntas</span>
+    <span class="badge badge-purple">60 Preguntas Predichas</span>
+  </div>
+</div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav class="nav">
+  <button class="active" onclick="showSection('s1',this)">📋 Proporción Temas</button>
+  <button onclick="showSection('s2',this)">🔁 Repetidas</button>
+  <button onclick="showSection('s3',this)">🏆 Ranking Global</button>
+  <button onclick="showSection('s4',this)">🧬 Fisiología</button>
+  <button onclick="showSection('s5',this)">🎯 Top 10 Predicción</button>
+  <button onclick="showSection('s6',this)">⭐ Temas 2024</button>
+  <button onclick="showSection('s7',this)">📝 Banqueo 60 Preguntas</button>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- SECCIÓN 1: PROPORCIÓN TEMAS POR AÑO -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="s1" class="section active">
+  <h2><span class="icon">📋</span>Proporción de Temas por Año</h2>
+  <p class="subtitle">Distribución porcentual de las categorías temáticas identificadas en cada año</p>
+
+  <div class="alert">
+    <strong>⚠️ Nota metodológica:</strong> Se analizaron los exámenes de 2010, 2018, 2019, 2020, 2021, 2023 y 2024 (banqueo consolidado + exámenes parciales). El 2024 contiene exactamente 60 preguntas verificadas.
+  </div>
+
+  <div class="card-grid">
+    <div class="stat-card"><div class="num">7</div><div class="label">Años analizados</div></div>
+    <div class="stat-card"><div class="num">~410</div><div class="label">Preguntas totales</div></div>
+    <div class="stat-card"><div class="num">60</div><div class="label">Preguntas 2024 (verificadas)</div></div>
+    <div class="stat-card"><div class="num">6</div><div class="label">Grandes temas</div></div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Tema</th>
+          <th>2010 (~20)</th>
+          <th>2018 (~41)</th>
+          <th>2019 (~30)</th>
+          <th>2020 (~35)</th>
+          <th>2021 (~60)</th>
+          <th>2023 (~39)</th>
+          <th>2024 (60) ★</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag-fis">FISIOLOGÍA</span></td>
+          <td><div class="pct-bar"><div class="bar" style="width:55px"></div><span class="pct-txt">55%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:58px"></div><span class="pct-txt">58%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:63px"></div><span class="pct-txt">63%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:60px"></div><span class="pct-txt">60%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:62px"></div><span class="pct-txt">62%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:64px"></div><span class="pct-txt">64%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:58px"></div><span class="pct-txt" style="color:#fcd34d">58%</span></div></td>
+          <td><strong>~235</strong></td>
+        </tr>
+        <tr>
+          <td>🔬 HISTOLOGÍA</td>
+          <td><div class="pct-bar"><div class="bar" style="width:20px;background:var(--green)"></div><span class="pct-txt">20%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:22px;background:var(--green)"></div><span class="pct-txt">22%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:17px;background:var(--green)"></div><span class="pct-txt">17%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:20px;background:var(--green)"></div><span class="pct-txt">20%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:18px;background:var(--green)"></div><span class="pct-txt">18%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:25px;background:var(--green)"></div><span class="pct-txt">25%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:22px;background:var(--green)"></div><span class="pct-txt" style="color:#fcd34d">22%</span></div></td>
+          <td><strong>~83</strong></td>
+        </tr>
+        <tr>
+          <td>🧫 EMBRIOLOGÍA</td>
+          <td><div class="pct-bar"><div class="bar" style="width:10px;background:var(--purple)"></div><span class="pct-txt">10%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:12px;background:var(--purple)"></div><span class="pct-txt">12%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:10px;background:var(--purple)"></div><span class="pct-txt">10%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:11px;background:var(--purple)"></div><span class="pct-txt">11%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:10px;background:var(--purple)"></div><span class="pct-txt">10%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:8px;background:var(--purple)"></div><span class="pct-txt">8%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:12px;background:var(--purple)"></div><span class="pct-txt" style="color:#fcd34d">12%</span></div></td>
+          <td><strong>~44</strong></td>
+        </tr>
+        <tr>
+          <td>🗺️ ANATOMÍA</td>
+          <td><div class="pct-bar"><div class="bar" style="width:8px;background:var(--teal)"></div><span class="pct-txt">8%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:5px;background:var(--teal)"></div><span class="pct-txt">5%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:5px;background:var(--teal)"></div><span class="pct-txt">5%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:5px;background:var(--teal)"></div><span class="pct-txt">5%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:5px;background:var(--teal)"></div><span class="pct-txt">5%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:3px;background:var(--teal)"></div><span class="pct-txt">3%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:5px;background:var(--teal)"></div><span class="pct-txt" style="color:#fcd34d">5%</span></div></td>
+          <td><strong>~22</strong></td>
+        </tr>
+        <tr>
+          <td>⚗️ FARMACOLOGÍA</td>
+          <td><div class="pct-bar"><div class="bar" style="width:7px;background:var(--gold)"></div><span class="pct-txt">7%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:3px;background:var(--gold)"></div><span class="pct-txt">3%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:5px;background:var(--gold)"></div><span class="pct-txt">5%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:4px;background:var(--gold)"></div><span class="pct-txt">4%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:5px;background:var(--gold)"></div><span class="pct-txt">5%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:0px;background:var(--gold)"></div><span class="pct-txt">0%</span></div></td>
+          <td><div class="pct-bar"><div class="bar" style="width:3px;background:var(--gold)"></div><span class="pct-txt" style="color:#fcd34d">3%</span></div></td>
+          <td><strong>~16</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>📌 Observaciones clave</h3>
+  <div class="card">
+    <ul style="list-style:disc; padding-left:20px; display:flex; flex-direction:column; gap:8px;">
+      <li>🏆 <strong>Fisiología domina todos los años</strong>, representando entre 55–64% del examen. Es la categoría con mayor peso histórico <em>y</em> en 2024.</li>
+      <li>🔬 <strong>Histología</strong> se ha incrementado: pasó de ~20% (2010–2021) a 22–25% en 2023–2024.</li>
+      <li>🧫 <strong>Embriología</strong> se mantiene estable (~10–12%) con 6–8 preguntas por examen.</li>
+      <li>💊 <strong>Farmacología (diuréticos)</strong> aparece integrada dentro de fisiología en los últimos años — no como categoría independiente sino como aplicación clínica del transporte tubular.</li>
+      <li>⭐ En 2024 hay por primera vez preguntas de <strong>neurología/inervación vesical</strong> y <strong>urología clínica</strong> (Tamm-Horsfall, uroplaquinas).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- SECCIÓN 2: PREGUNTAS REPETIDAS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="s2" class="section">
+  <h2><span class="icon">🔁</span>Preguntas Repetidas</h2>
+  <p class="subtitle">Preguntas que aparecen de forma idéntica o muy similar en múltiples años</p>
+
+  <div class="alert">
+    <strong>🔥 Dato clave:</strong> Las preguntas más repetidas históricamente TAMBIÉN aparecen en 2024 — altísima probabilidad de reaparecer en 2025.
+  </div>
+
+  <!-- Repetida 1 -->
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×6</span>
+      <span class="tag-high">★ ALTA PRIORIDAD</span>
+      <span class="tag-fis">FISIOLOGÍA</span>
+    </div>
+    <strong>Paciente con edema/ascitis + diurético → ↑FE Na / ↓FE K / acidosis metabólica → ¿Dónde actúa?</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta correcta: <strong>Receptor de aldosterona</strong></p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2018, 2019, 2020, 2021, banqueo parcial, <span style="color:#fcd34d"><strong>2024 (P12)</strong></span></p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×6</span>
+      <span class="tag-high">★ ALTA PRIORIDAD</span>
+      <span class="tag-fis">FISIOLOGÍA – CÁLCULO</span>
+    </div>
+    <strong>Calcular fracción de filtración: Pc=70, Pb=23, πc=35, Kf=10, FPR=480 ml/min</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>0.25</strong> (TFG=120 → FF=120/480)</p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2018, 2019, 2020, 2021, banqueo parcial, banqueo parcial 2</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×5</span>
+      <span class="tag-high">★ ALTA PRIORIDAD</span>
+      <span class="tag-fis">FISIOLOGÍA – CÁLCULO</span>
+    </div>
+    <strong>FPR con PAH: aclaramiento PAH=540, [PAH] vena=0.1 mg/ml, [PAH] arteria=1.0 mg/ml</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>600 ml/min</strong> (extracción=90% → 540/0.9)</p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2018, 2019, 2020, 2021, banqueo parcial</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×5</span>
+      <span class="tag-high">★ ALTA PRIORIDAD</span>
+      <span class="tag-fis">FISIOLOGÍA – CÁLCULO</span>
+    </div>
+    <strong>TFG=50 ml/min, [glucosa]=200 mg/dL, Tm glucosa=150 mg/min → tasa excreción glucosa</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>0 mg/min</strong> (carga filtrada=100 &lt; Tm=150 → todo se reabsorbe)</p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2019, 2021, 2023, banqueo parcial, banqueo parcial 2</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×5</span>
+      <span class="tag-fis">FISIOLOGÍA</span>
+    </div>
+    <strong>Fenómeno de autorregulación → mantiene constante la TFG</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>TFG</strong></p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2018, 2019, 2020, 2021, banqueo parcial</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×5</span>
+      <span class="tag-fis">FISIOLOGÍA</span>
+    </div>
+    <strong>Amonio renal derivado principalmente de...</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>Glutamina</strong></p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2018, 2019, 2020, 2021, banqueo parcial</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×4</span>
+      <span class="tag-fis">FISIOLOGÍA</span>
+    </div>
+    <strong>Bomba Na/K ATPasa favorece transporte activo secundario porque...</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>Desplaza al exterior mayor cantidad de cationes</strong></p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2018, 2019, 2021, banqueo parcial</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×4</span>
+      <span class="tag-high">★ ALTA PRIORIDAD</span>
+    </div>
+    <strong>Riñón en herradura → causa</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>Interferencia de la arteria mesentérica inferior</strong></p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2018, 2019, 2020, banqueo parcial</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×4</span>
+      <span class="tag-high">★ ALTA PRIORIDAD</span>
+    </div>
+    <strong>Cálculos renales por hipercalciuria → medida NO indicada</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>Bloqueador NKCC</strong> (los demás sí están indicados)</p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2018, 2019, 2020, 2021</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×4</span>
+    </div>
+    <strong>Orina por ombligo en recién nacido → uraco permeable / alantoides persistente</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>Permeabilidad del alantoides / persistencia del uraco</strong></p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2018, 2019, 2020, banqueo parcial</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×4</span>
+    </div>
+    <strong>Tm glucosa=240, TFG=120 → concentración máxima teórica para no hacer glucosuria</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>200 mg/dL</strong> (Tm/TFG = 240/120 × 100)</p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2019, 2021, banqueo parcial, banqueo parcial 2</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×3</span>
+      <span class="tag-high">★ ALTA PRIORIDAD</span>
+    </div>
+    <strong>Niño con retardo de crecimiento, vómitos, HCO3 bajo, pH urinario ácido → lesión a nivel</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>TCP (túbulo contorneado proximal)</strong> — acidosis tubular tipo II</p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2018, 2019, 2021, <span style="color:#fcd34d">variante en 2024 (P8)</span></p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×3</span>
+      <span class="tag-high">★ ALTA PRIORIDAD</span>
+    </div>
+    <strong>Corpúsculos renales en la médula renal → se ven en...</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>Columna renal</strong></p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2018, 2020, banqueo parcial</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×3</span>
+      <span class="tag-high">★ ALTA PRIORIDAD</span>
+    </div>
+    <strong>Pendrina: qué transportador se activa tras alta ingesta de proteínas para restablecer EAB</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>Pendrina</strong></p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2019, 2021, banqueo parcial</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×3</span>
+    </div>
+    <strong>Heparan sulfato → da carga negativa a la lámina rara externa de la membrana basal</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>Heparan sulfato</strong></p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2020, 2021, banqueo parcial</p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×3</span>
+      <span class="tag-high">★ ALTA PRIORIDAD</span>
+    </div>
+    <strong>Doble sistema renal completo → causa anatómica</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>Doble yema ureteral</strong></p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2019, 2020, <span style="color:#fcd34d">2024 (P11)</span></p>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+      <span class="tag-rep">REPETIDA ×3</span>
+      <span class="tag-high">★ ALTA PRIORIDAD</span>
+    </div>
+    <strong>Bloqueo receptor V2 → diabetes insípida nefrogénica (poliuria + hipernatremia)</strong>
+    <p style="margin-top:8px;color:var(--muted);font-size:0.85rem;">✅ Respuesta: <strong>Bloqueo del receptor V2</strong></p>
+    <p style="color:var(--muted);font-size:0.82rem;margin-top:4px;">📅 Años: 2021, 2023, <span style="color:#fcd34d">2024 (P40)</span></p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- SECCIÓN 3: RANKING GLOBAL -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="s3" class="section">
+  <h2><span class="icon">🏆</span>Ranking Global de Temas</h2>
+  <p class="subtitle">Todos los temas ordenados por frecuencia acumulada (todos los años)</p>
+
+  <div class="rank-item"><div class="rank-num top3">1</div><div class="rank-content"><div class="rank-title">⚗️ Fisiología: Equilibrio Ácido-Base <span class="tag-high">★ 2024</span></div><div class="rank-sub">Diagnóstico AEB, anión GAP, acidosis/alcalosis metabólica y respiratoria, cálculos Henderson-Hasselbalch</div></div><div class="rank-score">~48</div></div>
+  <div class="rank-item"><div class="rank-num top3">2</div><div class="rank-content"><div class="rank-title">🧪 Fisiología: Transporte Tubular y Aclaramiento <span class="tag-high">★ 2024</span></div><div class="rank-sub">Glucosa (carga filtrada, Tm, glucosuria), PAH, fracción excretada, creatinina, inulina</div></div><div class="rank-score">~45</div></div>
+  <div class="rank-item"><div class="rank-num top3">3</div><div class="rank-content"><div class="rank-title">🔬 Histología: Túbulos Renales <span class="tag-high">★ 2024</span></div><div class="rank-sub">TCP, TCD, asa de Henle, conductor colector, características histológicas comparativas</div></div><div class="rank-score">~40</div></div>
+  <div class="rank-item"><div class="rank-num">4</div><div class="rank-content"><div class="rank-title">🩺 Fisiología: Manejo de Sodio y Potasio <span class="tag-high">★ 2024</span></div><div class="rank-sub">Balance Na/K, transportadores NKCC/NCC/ENaC/ROMK, diuréticos, aldosterona</div></div><div class="rank-score">~38</div></div>
+  <div class="rank-item"><div class="rank-num">5</div><div class="rank-content"><div class="rank-title">🧫 Embriología: Yema Ureteral y Anomalías <span class="tag-high">★ 2024</span></div><div class="rank-sub">Agenesia renal, riñón en herradura, uraco, doble sistema, riñón bífido, GDNF/BMP4</div></div><div class="rank-score">~32</div></div>
+  <div class="rank-item"><div class="rank-num">6</div><div class="rank-content"><div class="rank-title">🩸 Fisiología: Función Glomerular <span class="tag-high">★ 2024</span></div><div class="rank-sub">TFG, FPR, fracción de filtración, presiones en el glomérulo, autorregulación, feedback túbulo-glomerular</div></div><div class="rank-score">~30</div></div>
+  <div class="rank-item"><div class="rank-num">7</div><div class="rank-content"><div class="rank-title">💧 Fisiología: Concentración/Dilución Orina – ADH <span class="tag-high">★ 2024</span></div><div class="rank-sub">Mecanismo contracorriente, vasa recta, gradiente osmótico medular, acuaporinas, ADH/V2, SIADH</div></div><div class="rank-score">~28</div></div>
+  <div class="rank-item"><div class="rank-num">8</div><div class="rank-content"><div class="rank-title">🔬 Histología: Corpúsculo Renal y Glomérulo <span class="tag-high">★ 2024</span></div><div class="rank-sub">Podocitos, células mesangiales, membrana basal, macula densa, aparato yuxtaglomerular</div></div><div class="rank-score">~22</div></div>
+  <div class="rank-item"><div class="rank-num">9</div><div class="rank-content"><div class="rank-title">🏗️ Histología: Urotelio y Vías Urinarias</div><div class="rank-sub">Epitelio de transición, uroplaquinas, vejiga, uréteres, uretra</div></div><div class="rank-score">~18</div></div>
+  <div class="rank-item"><div class="rank-num">10</div><div class="rank-content"><div class="rank-title">🩺 Fisiología: Acidosis Tubular Renal</div><div class="rank-sub">ATR tipo I (distal) vs tipo II (proximal), diagnóstico diferencial, pH urinario, anión gap urinario</div></div><div class="rank-score">~16</div></div>
+  <div class="rank-item"><div class="rank-num">11</div><div class="rank-content"><div class="rank-title">🗺️ Anatomía Renal <span class="tag-high">★ 2024</span></div><div class="rank-sub">Relaciones vasculares, vena renal izquierda, arteria mesentérica, espacio de Morrison</div></div><div class="rank-score">~14</div></div>
+  <div class="rank-item"><div class="rank-num">12</div><div class="rank-content"><div class="rank-title">🔬 Histología: Nefronas (Cortical vs Yuxtamedular)</div><div class="rank-sub">Tipos de nefronas, localización, asa de Henle, segmentos</div></div><div class="rank-score">~14</div></div>
+  <div class="rank-item"><div class="rank-num">13</div><div class="rank-content"><div class="rank-title">💊 Fisiología: Calcio y Magnesio <span class="tag-high">★ 2024</span></div><div class="rank-sub">Claudina 16/19, TRPV5, hipercalciuria, hipomagnesemia, NCC</div></div><div class="rank-score">~12</div></div>
+  <div class="rank-item"><div class="rank-num">14</div><div class="rank-content"><div class="rank-title">⚡ Fisiología: Amonio y Excreción Neta Ácidos</div><div class="rank-sub">Producción amonio desde glutamina, acidez titulable, excreción neta ácidos</div></div><div class="rank-score">~12</div></div>
+  <div class="rank-item"><div class="rank-num">15</div><div class="rank-content"><div class="rank-title">🧫 Embriología: Origen Embrionario de Estructuras</div><div class="rank-sub">Mesodermo intermedio, yema ureteral, blastema metanéfrico, GDNF, BMP4</div></div><div class="rank-score">~10</div></div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- SECCIÓN 4: FISIOLOGÍA DETALLADA -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="s4" class="section">
+  <h2><span class="icon">🧬</span>Análisis Especial: Fisiología</h2>
+  <p class="subtitle">Desglose por subtemas fisiológicos · frecuencia histórica + presencia en 2024</p>
+
+  <div class="alert">
+    <strong>🔬 La fisiología representa el 58–64% de cada examen.</strong> Conocerla a fondo es lo más rentable que puedes hacer.
+  </div>
+
+  <div class="fis-grid">
+    <div class="fis-card priority">
+      <div class="fis-title">⭐ Equilibrio Ácido-Base <span class="tag-high">★ 2024</span></div>
+      <div class="fis-count">48</div>
+      <div class="fis-years">2010, 2018, 2019, 2020, 2021, 2023, 2024</div>
+      <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">Diagnóstico AEB, anión GAP, compensaciones, fórmula Henderson-Hasselbalch, acidosis hiperclorémica</div>
+    </div>
+    <div class="fis-card priority">
+      <div class="fis-title">⭐ Transporte Tubular <span class="tag-high">★ 2024</span></div>
+      <div class="fis-count">45</div>
+      <div class="fis-years">2010, 2018, 2019, 2020, 2021, 2023, 2024</div>
+      <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">Glucosa (Tm, carga filtrada), PAH, aclaramiento, fracción excretada, transportadores SGLT2/NHE3</div>
+    </div>
+    <div class="fis-card priority">
+      <div class="fis-title">⭐ Manejo Na/K – Diuréticos <span class="tag-high">★ 2024</span></div>
+      <div class="fis-count">38</div>
+      <div class="fis-years">2018, 2019, 2020, 2021, 2023, 2024</div>
+      <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">NKCC, NCC, ENaC, receptor aldosterona, ROMK, balance de sodio, secreción K+ tubular</div>
+    </div>
+    <div class="fis-card priority">
+      <div class="fis-title">⭐ Filtración Glomerular <span class="tag-high">★ 2024</span></div>
+      <div class="fis-count">30</div>
+      <div class="fis-years">2010, 2018, 2019, 2020, 2021, 2023, 2024</div>
+      <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">TFG, FPR, fracción filtración, presiones, autorregulación, feedback túbulo-glomerular, IECAs</div>
+    </div>
+    <div class="fis-card priority">
+      <div class="fis-title">⭐ Concentración/ADH/Vasa Recta <span class="tag-high">★ 2024</span></div>
+      <div class="fis-count">28</div>
+      <div class="fis-years">2019, 2020, 2021, 2023, 2024</div>
+      <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">Mecanismo contracorriente, vasa recta (función), ADH, acuaporinas, V2, SIADH, gradiente osmótico medular</div>
+    </div>
+    <div class="fis-card priority">
+      <div class="fis-title">⭐ Acidosis Tubular Renal <span class="tag-high">★ 2024</span></div>
+      <div class="fis-count">16</div>
+      <div class="fis-years">2018, 2019, 2020, 2021, 2024</div>
+      <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">ATR tipo I (distal, H-ATPasa), ATR tipo II (proximal, HCO3 reabsorción), diagnóstico diferencial con anión GAP urinario</div>
+    </div>
+    <div class="fis-card priority">
+      <div class="fis-title">⭐ Ca / Mg Renal <span class="tag-high">★ 2024</span></div>
+      <div class="fis-count">12</div>
+      <div class="fis-years">2019, 2021, 2023, 2024</div>
+      <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">Claudina 16 y 19 (asa de Henle), TRPV5 (TCD), cálculos renales hipercalciuria, hipomagnesemia</div>
+    </div>
+    <div class="fis-card">
+      <div class="fis-title">Amonio y Acidez Titulable</div>
+      <div class="fis-count">12</div>
+      <div class="fis-years">2018, 2019, 2020, 2021</div>
+      <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">Glutamina → NH4+, excreción neta ácidos, acidez titulable vs no titulable, cálculos</div>
+    </div>
+    <div class="fis-card">
+      <div class="fis-title">Potasio: Manejo Clínico</div>
+      <div class="fis-count">10</div>
+      <div class="fis-years">2021, 2023, 2024</div>
+      <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">Hiperkalemia (manejo: insulina, bicarbonato, β2 agonistas), gradiente transtubular K</div>
+    </div>
+    <div class="fis-card">
+      <div class="fis-title">Osmolaridad y Compartimentos</div>
+      <div class="fis-count">10</div>
+      <div class="fis-years">2019, 2020, 2021, 2023</div>
+      <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">Deshidratación intracelular/extracelular, tonicidad, aclaramiento agua libre, ADH</div>
+    </div>
+    <div class="fis-card">
+      <div class="fis-title">Función tubular proximal específica</div>
+      <div class="fis-count">10</div>
+      <div class="fis-years">2019, 2021, 2023, 2024</div>
+      <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">Reabsorción aminoácidos/glucosa, síntesis calcitriol, producción EPO, anhidrasa carbónica IV, borde en cepillo</div>
+    </div>
+    <div class="fis-card">
+      <div class="fis-title">Eje RAA (Renina-Angiotensina)</div>
+      <div class="fis-count">8</div>
+      <div class="fis-years">2018, 2019, 2020, 2021</div>
+      <div style="margin-top:8px;font-size:0.8rem;color:var(--muted)">Angiotensina II, aldosterona, IECAs, estenosis arteria renal, macula densa, renina</div>
+    </div>
+  </div>
+
+  <h3>📊 Subtemas de Fisiología más frecuentes en 2024 (★ Alta Prioridad)</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Subtema Fisiológico</th><th>Pregs 2024</th><th>Frecuencia Histórica</th><th>Prioridad</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Equilibrio Ácido-Base (diagnóstico AEB, anión GAP)</td><td>6</td><td>★★★★★</td><td><span class="tag-high">★ MUY ALTA</span></td></tr>
+        <tr><td>2</td><td>Diuréticos / Transportadores tubulares Na/K</td><td>5</td><td>★★★★★</td><td><span class="tag-high">★ MUY ALTA</span></td></tr>
+        <tr><td>3</td><td>Aclaramiento renal (TFG, FPR, fracción filtración)</td><td>4</td><td>★★★★★</td><td><span class="tag-high">★ MUY ALTA</span></td></tr>
+        <tr><td>4</td><td>ADH / Receptor V2 / Concentración de orina</td><td>4</td><td>★★★★☆</td><td><span class="tag-high">★ ALTA</span></td></tr>
+        <tr><td>5</td><td>Manejo de Calcio y Magnesio (claudinas)</td><td>3</td><td>★★★☆☆</td><td><span class="tag-high">★ ALTA</span></td></tr>
+        <tr><td>6</td><td>Acidosis Tubular Renal (tipo I vs II)</td><td>3</td><td>★★★★☆</td><td><span class="tag-high">★ ALTA</span></td></tr>
+        <tr><td>7</td><td>Vasos rectos / Gradiente osmótico medular</td><td>2</td><td>★★★☆☆</td><td><span class="tag-ok">MEDIA</span></td></tr>
+        <tr><td>8</td><td>Manejo hiperkalemia aguda</td><td>2</td><td>★★☆☆☆</td><td><span class="tag-ok">MEDIA</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- SECCIÓN 5: TOP 10 PREDICCIÓN -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="s5" class="section">
+  <h2><span class="icon">🎯</span>Top 10 Temas para el Examen 2025</h2>
+  <p class="subtitle">Predicción basada en patrón histórico + peso del banqueo 2024 (70%)</p>
+
+  <div class="alert">
+    <strong>📌 Estrategia:</strong> Estudia en el orden presentado. Los primeros 5 temas solos representan ~65% del examen proyectado para 2025.
+  </div>
+
+  <div class="pred-item">
+    <div class="pred-rank">1</div>
+    <div class="pred-body">
+      <div class="pred-title">⚗️ Equilibrio Ácido-Base Completo <span class="tag-high">★ 2024 (6 preg.)</span></div>
+      <div class="pred-why">El tema más frecuente en TODOS los años sin excepción. En 2024 hubo 6 preguntas. Incluye: diagnóstico (pH, pCO2, HCO3), anión GAP sérico y urinario, acidosis hiperclorémica vs AG alto, manejo (ej. aspirina → alcalinizar orina, cetoacidosis). IMPRESCINDIBLE dominar la fórmula Henderson-Hasselbalch.</div>
+    </div>
+    <div class="pred-prob prob-high">~95%</div>
+  </div>
+
+  <div class="pred-item">
+    <div class="pred-rank">2</div>
+    <div class="pred-body">
+      <div class="pred-title">🧪 Transporte Tubular + Cálculos Renales <span class="tag-high">★ 2024</span></div>
+      <div class="pred-why">Cálculos de carga filtrada, Tm glucosa, fracción excretada, PAH, depuración creatinina. Aparece en todos los años con preguntas numéricas. Saber resolver el caso de TFG=50/[glu]=200/Tm=150 → excreción=0 es casi seguro.</div>
+    </div>
+    <div class="pred-prob prob-high">~92%</div>
+  </div>
+
+  <div class="pred-item">
+    <div class="pred-rank">3</div>
+    <div class="pred-body">
+      <div class="pred-title">🔬 Histología Túbulos + Nefronas <span class="tag-high">★ 2024</span></div>
+      <div class="pred-why">Comparación TCP vs TCD vs asa Henle (histología), nefronas corticales vs yuxtamedulares, borde en cepillo, consumo energético. En 2024 hay preguntas con imágenes histológicas — estudia las características microscópicas de cada segmento tubular.</div>
+    </div>
+    <div class="pred-prob prob-high">~90%</div>
+  </div>
+
+  <div class="pred-item">
+    <div class="pred-rank">4</div>
+    <div class="pred-body">
+      <div class="pred-title">💊 Diuréticos + Transportadores Na/K <span class="tag-high">★ 2024 (5 preg.)</span></div>
+      <div class="pred-why">NKCC (asa furosemida), NCC (tiazida), ENaC, receptor aldosterona, ROMK. La pregunta clásica del "diurético con ↑FENa/↓FEK/acidosis = receptor aldosterona" está en 6 años. La pregunta del cálculo renales + NKCC no indicado también es muy recurrente.</div>
+    </div>
+    <div class="pred-prob prob-high">~90%</div>
+  </div>
+
+  <div class="pred-item">
+    <div class="pred-rank">5</div>
+    <div class="pred-body">
+      <div class="pred-title">🧫 Embriología Renal <span class="tag-high">★ 2024 (7 preg.)</span></div>
+      <div class="pred-why">Agenesia renal (ausencia yema ureteral), riñón en herradura (arteria mesentérica inferior), doble sistema (doble yema ureteral), uraco permeable, riñón bífido (bifurcación temprana yema), GDNF/BMP4, origen mesodérmico del uréter. Frecuencia aumentó en 2024.</div>
+    </div>
+    <div class="pred-prob prob-high">~88%</div>
+  </div>
+
+  <div class="pred-item">
+    <div class="pred-rank">6</div>
+    <div class="pred-body">
+      <div class="pred-title">💧 ADH + Concentración Urina + Vasa Recta <span class="tag-high">★ 2024</span></div>
+      <div class="pred-why">Mecanismo contracorriente, vasos rectos (mantienen gradiente osmótico), acuaporina 2, receptor V2, SIADH vs deshidratación. Nueva en 2024: pregunta de vasos rectos y gradiente osmótico. El caso de bloqueo V2 se repite 3 veces.</div>
+    </div>
+    <div class="pred-prob prob-mid">~85%</div>
+  </div>
+
+  <div class="pred-item">
+    <div class="pred-rank">7</div>
+    <div class="pred-body">
+      <div class="pred-title">🔬 Aparato Yuxtaglomerular + Macula Densa <span class="tag-high">★ 2024</span></div>
+      <div class="pred-why">Función macula densa (percibe variaciones NaCl luminal), células YG (renina), feedback túbulo-glomerular, adenosina. En 2024 apareció con imagen histológica. Preguntas de función (no solo morfología).</div>
+    </div>
+    <div class="pred-prob prob-mid">~80%</div>
+  </div>
+
+  <div class="pred-item">
+    <div class="pred-rank">8</div>
+    <div class="pred-body">
+      <div class="pred-title">🦴 Calcio + Magnesio Renal <span class="tag-high">★ 2024 (P29)</span></div>
+      <div class="pred-why">Claudina 16/19 (transporte paracelular Ca/Mg en asa gruesa ascendente), hipercalciuria/hipomagnesemia, cálculos renales. Nuevo en 2024: claudina 16 en contexto clínico. Antes solo aparecía como dato aislado.</div>
+    </div>
+    <div class="pred-prob prob-mid">~78%</div>
+  </div>
+
+  <div class="pred-item">
+    <div class="pred-rank">9</div>
+    <div class="pred-body">
+      <div class="pred-title">🏗️ Urotelio + Vejiga (Anatomía/Histología) <span class="tag-high">★ 2024</span></div>
+      <div class="pred-why">Uroplaquinas (adhesinas E.coli), epitelio transicional, inervación vesical (nervio esplácnico pélvico S2-S4 → detrusor), proteína de Tamm-Horsfall. Son temas relativamente nuevos con alta probabilidad de reaparecer.</div>
+    </div>
+    <div class="pred-prob prob-mid">~75%</div>
+  </div>
+
+  <div class="pred-item">
+    <div class="pred-rank">10</div>
+    <div class="pred-body">
+      <div class="pred-title">🩸 Función Glomerular + Síndrome Nefrótico <span class="tag-high">★ 2024</span></div>
+      <div class="pred-why">Presiones de filtración (Starling), membrana basal (heparan sulfato), síndrome nefrótico clínico (edema, hipoalbuminemia, uso diuréticos, hipomagnesemia por furosemida), fracción excretada de urea. Aparece en todos los años.</div>
+    </div>
+    <div class="pred-prob prob-low">~70%</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- SECCIÓN 6: TEMAS 2024 ORDENADOS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="s6" class="section">
+  <h2><span class="icon">⭐</span>Temas del 2024 — Ordenados por Frecuencia Histórica</h2>
+  <p class="subtitle">Lista especial de temas del banqueo 2024 rankeados según su peso histórico acumulado</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>Rank</th><th>Tema 2024</th><th>Preg. 2024</th><th>Histórico</th><th>Repetida?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong style="color:var(--gold)">1°</strong></td><td>Equilibrio Ácido-Base (diagnóstico, AG, cálculos)</td><td>6</td><td>★★★★★ Todos los años</td><td><span class="tag-rep">REPETIDA ×7</span></td></tr>
+        <tr><td><strong style="color:var(--gold)">2°</strong></td><td>Receptor aldosterona / diuréticos (FENa/FEK/acidosis)</td><td>2</td><td>★★★★★ 6 años</td><td><span class="tag-rep">REPETIDA ×6</span></td></tr>
+        <tr><td><strong style="color:var(--gold)">3°</strong></td><td>Transporte tubular / Aclaramiento (glucosa, Tm)</td><td>3</td><td>★★★★★ Todos los años</td><td><span class="tag-rep">REPETIDA ×5</span></td></tr>
+        <tr><td>4°</td><td>Histología túbulos (TCP, nefronas, borde cepillo)</td><td>5</td><td>★★★★☆ 5 años</td><td><span class="tag-rep">REPETIDA ×4</span></td></tr>
+        <tr><td>5°</td><td>Embriología (agenesia, doble sistema, yema ureteral)</td><td>7</td><td>★★★★☆ 5 años</td><td><span class="tag-rep">REPETIDA ×4</span></td></tr>
+        <tr><td>6°</td><td>ADH / Receptor V2 / Concentración orina</td><td>4</td><td>★★★★☆ 4 años</td><td><span class="tag-rep">REPETIDA ×3</span></td></tr>
+        <tr><td>7°</td><td>Macula densa / AYG / Feedback tubuloglomerular</td><td>2</td><td>★★★☆☆ 4 años</td><td><span class="tag-rep">REPETIDA ×3</span></td></tr>
+        <tr><td>8°</td><td>Manejo Ca/Mg (claudina 16, cálculos)</td><td>3</td><td>★★★☆☆ 3 años</td><td><span class="tag-rep">REPETIDA ×3</span></td></tr>
+        <tr><td>9°</td><td>Vasa recta / Gradiente osmótico medular</td><td>2</td><td>★★★☆☆ 3 años</td><td><span class="tag-rep">REPETIDA ×2</span></td></tr>
+        <tr><td>10°</td><td>Síndrome nefrótico / manejo diuréticos múltiples</td><td>1</td><td>★★★☆☆ 3 años</td><td><span class="tag-ok">Variaciones</span></td></tr>
+        <tr><td>11°</td><td>Anatomía vascular renal (vena renal izquierda)</td><td>1</td><td>★★★☆☆ 3 años</td><td><span class="tag-rep">REPETIDA ×2</span></td></tr>
+        <tr><td>12°</td><td>Urotelio / Uroplaquinas / E.coli</td><td>2</td><td>★★☆☆☆ 2 años</td><td><span class="tag-ok">Nuevo 2024</span></td></tr>
+        <tr><td>13°</td><td>Inervación vejiga (esplácnico pélvico)</td><td>1</td><td>★★☆☆☆ 2 años</td><td><span class="tag-ok">Nuevo 2024</span></td></tr>
+        <tr><td>14°</td><td>Proteína Tamm-Horsfall / Uromodulina</td><td>1</td><td>★☆☆☆☆ 1 año</td><td><span class="tag-ok">Nuevo 2024</span></td></tr>
+        <tr><td>15°</td><td>Ácido úrico / Lisis tumoral</td><td>1</td><td>★☆☆☆☆ 1 año</td><td><span class="tag-ok">Nuevo 2024</span></td></tr>
+        <tr><td>16°</td><td>Balance de sodio (cálculo)</td><td>1</td><td>★★☆☆☆ 2 años</td><td><span class="tag-ok">Variaciones</span></td></tr>
+        <tr><td>17°</td><td>Cetoacidosis diabética / manejo K+</td><td>1</td><td>★★☆☆☆ 2 años</td><td><span class="tag-ok">Variaciones</span></td></tr>
+        <tr><td>18°</td><td>Excreción creatinina (mg/kg/día)</td><td>1</td><td>★★☆☆☆ 2 años</td><td><span class="tag-ok">Variaciones</span></td></tr>
+        <tr><td>19°</td><td>Aspirina + alcalinización orina</td><td>1</td><td>★★☆☆☆ 2 años</td><td><span class="tag-ok">Nuevo 2024</span></td></tr>
+        <tr><td>20°</td><td>Hiperkalemia aguda (manejo temporal)</td><td>2</td><td>★★☆☆☆ 2 años</td><td><span class="tag-ok">Variaciones</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- SECCIÓN 7: BANQUEO 60 PREGUNTAS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="s7" class="section">
+  <h2><span class="icon">📝</span>Banqueo Predicho: 60 Preguntas</h2>
+  <p class="subtitle">Basado en patrón histórico + 70% desde banco 2024. Cada pregunta con explicación y alternativas calibradas.</p>
+
+  <div class="alert">
+    <strong>⭐ 42 preguntas marcadas con oro provienen directamente del banco 2024 o son variantes directas. Las restantes 18 son temas históricos recurrentes.</strong>
+  </div>
+
+  <!-- Q1 -->
+  <div class="q-block priority">
+    <div class="q-header">
+      <div class="q-num gold">1</div>
+      <div class="q-text">Un lactante nace con nariz aplanada, orejas de implantación baja y espacio interpupilar amplio. Muere pocas horas después por hipoplasia pulmonar severa. ¿Cuál es el diagnóstico más probable?</div>
+    </div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">EMBRIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Riñón en herradura</li>
+      <li class="correct">b) Agenesia renal bilateral (Secuencia de Potter)</li>
+      <li>c) Riñón poliquístico autosómico recesivo</li>
+      <li>d) Ectopia renal bilateral</li>
+    </ul>
+    <div class="explanation">La tríada facies característica + hipoplasia pulmonar severa = secuencia de Potter. La causa: oligohidramnios por ausencia de orina fetal. En la agenesia bilateral no hay yema ureteral que induzca el blastema metanéfrico.</div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">2</div><div class="q-text">¿De dónde deriva embriológicamente el epitelio de transición del uréter?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">EMBRIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Endodermo</li>
+      <li class="correct">b) Mesodermo</li>
+      <li>c) Ectodermo</li>
+      <li>d) Endodermo y mesodermo</li>
+    </ul>
+    <div class="explanation">El uréter se origina de la yema ureteral, que es un divertículo del conducto mesonéfrico, cuyo origen es el mesodermo intermedio. Todo el epitelio del sistema colector (uréter, pelvis, cálices) es de origen mesodérmico.</div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">3</div><div class="q-text">Un lactante con infecciones urinarias recurrentes tiene un doble sistema renal con un uréter que drena ectópicamente. ¿Cuál es la causa embriológica?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">EMBRIOLOGÍA</span><span class="tag-rep">REPETIDA ×3</span></div>
+    <ul class="options">
+      <li>a) Bifurcación temprana de la yema ureteral</li>
+      <li class="correct">b) Doble yema ureteral</li>
+      <li>c) Persistencia del pronefros</li>
+      <li>d) Fusión del blastema metanéfrico</li>
+    </ul>
+    <div class="explanation">El doble sistema completo con dos uréteres separados hasta la vejiga se debe a la formación de dos yemas ureterales independientes. El sistema incompleto (dos uréteres que se unen) es por bifurcación temprana de una sola yema.</div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">4</div><div class="q-text">Un recién nacido elimina orina por el ombligo. ¿Cuál es la causa?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">EMBRIOLOGÍA</span><span class="tag-rep">REPETIDA ×4</span></div>
+    <ul class="options">
+      <li>a) Agenesia de la vejiga</li>
+      <li>b) Fístula uretrovesical</li>
+      <li class="correct">c) Persistencia del uraco (alantoides permeable)</li>
+      <li>d) Extrofia vesical</li>
+    </ul>
+    <div class="explanation">El uraco es el remanente del alantoides que conecta la vejiga con el ombligo. Normalmente se oblitera formando el ligamento umbilical medio. Si persiste permeable, la orina sale por el ombligo.</div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">5</div><div class="q-text">¿Cuál es la causa del riñón en herradura?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">EMBRIOLOGÍA</span><span class="tag-rep">REPETIDA ×4</span></div>
+    <ul class="options">
+      <li>a) Fusión de los polos superiores de ambos riñones</li>
+      <li>b) Posición anómala de la vena renal</li>
+      <li class="correct">c) Interferencia de la arteria mesentérica inferior durante el ascenso</li>
+      <li>d) Mutación del gen GDNF</li>
+    </ul>
+    <div class="explanation">Los riñones fusionados por sus polos inferiores quedan atrapados debajo de la arteria mesentérica inferior durante su ascenso, quedando en posición lumbar baja. La AMI impide la ascensión normal.</div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">6</div><div class="q-text">¿Cuál es la consecuencia de una mutación del gen GDNF (factor neurotrópico derivado de células gliales)?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">EMBRIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Deficiencia en la producción de eritropoyetina</li>
+      <li>b) Alteraciones en el sistema nervioso central</li>
+      <li class="correct">c) Falta de crecimiento de la yema ureteral</li>
+      <li>d) Disfunción en la filtración glomerular</li>
+    </ul>
+    <div class="explanation">GDNF actúa sobre el receptor RET ubicado en la yema ureteral. Sin GDNF, la yema ureteral no crece hacia el blastema metanéfrico, resultando en agenesia renal. BMP4 inhibe el crecimiento aberrante de la yema (inhibidor de RET).</div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">7</div><div class="q-text">En la histología renal, ¿en cuál de las siguientes estructuras se espera mayor consumo de energía (ATP)?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">HISTOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Asa delgada de Henle</li>
+      <li>b) Túbulo conector</li>
+      <li class="correct">c) Túbulo contorneado proximal</li>
+      <li>d) Túbulo colector medular</li>
+    </ul>
+    <div class="explanation">El TCP reabsorbe ~67% del filtrado de forma activa (Na, glucosa, aminoácidos, HCO3). Tiene la mayor densidad de mitocondrias (fosforilación oxidativa), dependiendo casi exclusivamente de metabolismo aeróbico. Es la estructura más metabólicamente activa del riñón.</div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">8</div><div class="q-text">Observa una microfotografía de riñón normal H&E con un túbulo de epitelio simple plano cuyos núcleos no protruyen al lumen, y otro con epitelio cilíndrico alto y células bien delimitadas con intersticio amplio. ¿A qué tipo de nefrona corresponden?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">HISTOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Cortical superficial</li>
+      <li class="correct">b) Yuxtamedular</li>
+      <li>c) Subcapsular</li>
+      <li>d) Cortical mediana</li>
+    </ul>
+    <div class="explanation">Las nefronas yuxtamedulares tienen asas de Henle largas que llegan a la médula interna. El epitelio plano del asa delgada con núcleos que no protruyen es característico de la médula interna. El intersticio amplio es típico de la zona medular.</div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">9</div><div class="q-text">¿Cuál es una característica de la macula densa que la diferencia de otras células tubulares?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">HISTOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Sus células liberan renina directamente</li>
+      <li class="correct">b) Percibe variaciones de la concentración de NaCl en el lumen tubular</li>
+      <li>c) Presenta pendrinas en su membrana luminal</li>
+      <li>d) Tiene la mayor tasa de reabsorción de calcio</li>
+    </ul>
+    <div class="explanation">La macula densa es un grupo de células especializadas del TCD que detectan la concentración de NaCl en el líquido tubular. Envían señales a las células yuxtaglomerulares (que sí producen renina) para regular el feedback túbulo-glomerular. No sintetizan renina directamente.</div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">10</div><div class="q-text">¿Qué molécula proporciona carga negativa a la lámina rara externa de la membrana basal glomerular?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">HISTOLOGÍA</span><span class="tag-rep">REPETIDA ×3</span></div>
+    <ul class="options">
+      <li>a) Colágeno tipo IV</li>
+      <li>b) Laminina</li>
+      <li>c) Fibronectina</li>
+      <li class="correct">d) Heparan sulfato</li>
+    </ul>
+    <div class="explanation">El heparan sulfato es un proteoglicano con carga aniónica que forma parte de las láminas raras (externa e interna) de la membrana basal glomerular. Esta carga negativa repele las proteínas plasmáticas de carga negativa (como la albúmina), siendo fundamental para la selectividad de la barrera de filtración.</div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">11</div><div class="q-text">Una mujer con infecciones urinarias recurrentes por E.coli uropatógena. ¿Cuál es el mecanismo principal de colonización bacteriana en la vejiga?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">HISTOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Aumento de permeabilidad de uniones estrechas</li>
+      <li>b) Activación de receptores de ADH</li>
+      <li class="correct">c) Interacción de adhesinas bacterianas con uroplaquinas</li>
+      <li>d) Disminución del grosor del urotelio</li>
+    </ul>
+    <div class="explanation">Las uroplaquinas son proteínas integrales de la membrana apical de las células uroteliales. E.coli uropatógena posee adhesinas (fimbrias tipo 1 y P) que se unen específicamente a estas uroplaquinas, facilitando la adhesión y colonización de la vejiga.</div>
+  </div>
+
+  <!-- Q12 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">12</div><div class="q-text">¿Cuál es la función de la proteína de Tamm-Horsfall (uromodulina) en la salud del tracto urinario?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Inhibe activamente la formación de cálculos</li>
+      <li class="correct">b) Evita la adhesión de uropatógenos</li>
+      <li>c) Facilita la reabsorción de NaCl en el asa</li>
+      <li>d) Modula la síntesis de eritropoyetina</li>
+    </ul>
+    <div class="explanation">La proteína de Tamm-Horsfall (uromodulina) es secretada por las células del asa gruesa ascendente. Actúa como señuelo para las adhesinas bacterianas, evitando que las bacterias se adhieran al epitelio urinario. Sus niveles están reducidos en pacientes con infecciones urinarias recurrentes.</div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">13</div><div class="q-text">Un paciente presenta TFG de 50 ml/min, glucosa sérica de 200 mg/dL y transporte máximo de glucosa de 150 mg/min. ¿Cuál es la tasa de excreción de glucosa?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA – CÁLCULO</span><span class="tag-rep">REPETIDA ×5</span></div>
+    <ul class="options">
+      <li>a) 50 mg/min</li>
+      <li>b) 100 mg/min</li>
+      <li>c) 150 mg/min</li>
+      <li class="correct">d) 0 mg/min</li>
+    </ul>
+    <div class="explanation">Carga filtrada = TFG × [glucosa] = 50 ml/min × 2 mg/ml = 100 mg/min. Como 100 mg/min &lt; Tm (150 mg/min), toda la glucosa filtrada se reabsorbe. Excreción = 0. Sólo hay glucosuria cuando la carga filtrada supera el Tm.</div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">14</div><div class="q-text">Calcular la fracción de filtración: Pc=70 mmHg, Pb=23 mmHg, πc=35 mmHg, Kf=10 ml/min/mmHg, FPR=480 ml/min</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA – CÁLCULO</span><span class="tag-rep">REPETIDA ×6</span></div>
+    <ul class="options">
+      <li>a) 0.20</li>
+      <li>b) 0.12</li>
+      <li class="correct">c) 0.25</li>
+      <li>d) 0.48</li>
+    </ul>
+    <div class="explanation">Presión neta = 70 − 23 − 35 = 12 mmHg. TFG = Kf × Pneta = 10 × 12 = 120 ml/min. FF = TFG/FPR = 120/480 = 0.25 (25%). Es un valor normal en humanos.</div>
+  </div>
+
+  <!-- Q15 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">15</div><div class="q-text">Calcular el flujo plasmático renal: aclaramiento PAH=540 ml/min, [PAH]vena=0.1 mg/ml, [PAH]arteria=1.0 mg/ml</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA – CÁLCULO</span><span class="tag-rep">REPETIDA ×5</span></div>
+    <ul class="options">
+      <li>a) 540 ml/min</li>
+      <li>b) 270 ml/min</li>
+      <li class="correct">c) 600 ml/min</li>
+      <li>d) 480 ml/min</li>
+    </ul>
+    <div class="explanation">La extracción renal del PAH = (1.0 − 0.1)/1.0 = 0.9 (90%). El aclaramiento PAH representa el 90% del FPR verdadero. FPR = 540/0.9 = 600 ml/min. Flujo sanguíneo renal ≈ 600/(1-Hto).</div>
+  </div>
+
+  <!-- Q16 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">16</div><div class="q-text">El fenómeno de autorregulación renal trata de mantener constante a diferentes presiones arteriales:</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span><span class="tag-rep">REPETIDA ×5</span></div>
+    <ul class="options">
+      <li>a) La presión arterial media</li>
+      <li class="correct">b) La tasa de filtración glomerular</li>
+      <li>c) El flujo plasmático renal</li>
+      <li>d) La presión venosa renal</li>
+    </ul>
+    <div class="explanation">La autorregulación renal (mecanismo miogénico + feedback túbulo-glomerular) mantiene la TFG constante entre 80–180 mmHg de PAM. Evitar cambios bruscos en la TFG protege al organismo de pérdida excesiva de agua y electrolitos durante variaciones hemodinámicas.</div>
+  </div>
+
+  <!-- Q17 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">17</div><div class="q-text">Un paciente con edema y ascitis recibe un diurético que produce ↑FE sodio, ↓FE potasio y acidosis metabólica. ¿En qué actúa?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span><span class="tag-rep">REPETIDA ×6</span></div>
+    <ul class="options">
+      <li>a) Canal ENaC</li>
+      <li>b) NKCC2</li>
+      <li>c) NCC</li>
+      <li class="correct">d) Receptor de aldosterona</li>
+    </ul>
+    <div class="explanation">El receptor de aldosterona actúa en células principales (reabsorbe Na, secreta K) Y en células intercaladas alfa (activa H-ATPasa = secreta H+). Al bloquearlo: ↑FENa, ↓FEK (no secreta K) y acidosis metabólica (no secreta H+). ENaC solo actúa en células principales, no intercaladas, por lo que no causaría acidosis.</div>
+  </div>
+
+  <!-- Q18 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">18</div><div class="q-text">Un paciente con cálculos renales por hipercalciuria. ¿Cuál de las siguientes medidas NO estaría indicada?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span><span class="tag-rep">REPETIDA ×4</span></div>
+    <ul class="options">
+      <li>a) Dieta baja en sodio</li>
+      <li>b) Uso de bloqueador del NCC</li>
+      <li>c) Ingesta de 1–2 litros de agua diarios</li>
+      <li class="correct">d) Uso de bloqueador del NKCC</li>
+    </ul>
+    <div class="explanation">El bloqueador NKCC (furosemida) inhibe la reabsorción de Ca en el asa gruesa ascendente, aumentando la calciuria → contraindicado. Los bloqueadores NCC (tiazidas) estimulan reabsorción de Ca en TCD → indicados. Dieta baja en sodio: el Na compite con Ca en TCP → menos Na = más reabsorción Ca. Agua: diluye cristales.</div>
+  </div>
+
+  <!-- Q19 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">19</div><div class="q-text">La bomba Na/K ATPasa favorece el transporte activo secundario porque:</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span><span class="tag-rep">REPETIDA ×4</span></div>
+    <ul class="options">
+      <li>a) Saca 2 Na⁺ y mete 3 K⁺</li>
+      <li>b) Mantiene el pH intracelular más alto</li>
+      <li>c) Al hincharse la célula la bomba se activa</li>
+      <li class="correct">d) Desplaza al exterior una mayor cantidad de cationes</li>
+    </ul>
+    <div class="explanation">La bomba Na/K ATPasa saca 3 Na⁺ y mete 2 K⁺, generando un gradiente electroquímico de sodio (bajo Na intracelular + carga negativa intracelular). Este gradiente permite que el Na "descienda" hacia el interior arrastrando glucosa, aminoácidos y H⁺ con cotransportadores = transporte activo secundario.</div>
+  </div>
+
+  <!-- Q20 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">20</div><div class="q-text">El amonio producido en los riñones deriva principalmente de:</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span><span class="tag-rep">REPETIDA ×5</span></div>
+    <ul class="options">
+      <li>a) Leucina</li>
+      <li>b) Urea</li>
+      <li>c) Glicina</li>
+      <li class="correct">d) Glutamina</li>
+    </ul>
+    <div class="explanation">La glutamina es el principal precursor del amonio renal. En el TCP, la glutaminasa convierte glutamina en glutamato + NH4⁺. Luego la glutamato deshidrogenasa produce α-cetoglutarato + otro NH4⁺. Esto se activa especialmente en acidosis para aumentar la excreción de ácido.</div>
+  </div>
+
+  <!-- Q21 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">21</div><div class="q-text">Paciente con [H⁺]=60 nmol/L, pCO₂=30 mmHg, Na⁺=140 mEq/L, Cl⁻=100 mEq/L. ¿Diagnóstico ácido-base?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Alcalosis metabólica</li>
+      <li>b) Acidosis respiratoria</li>
+      <li>c) Acidosis metabólica anión GAP normal</li>
+      <li class="correct">d) Acidosis metabólica anión GAP alto</li>
+    </ul>
+    <div class="explanation">[H⁺]=24×pCO₂/HCO₃ → 60=24×30/HCO₃ → HCO₃=12 mEq/L. HCO₃ bajo = acidosis metabólica. AG = 140−100−12 = 28 mEq/L (normal &lt;12) = AG elevado. Causas: cetoácidos, lactato, metanol, salicilatos (AKMUL nemotecnia).</div>
+  </div>
+
+  <!-- Q22 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">22</div><div class="q-text">Un joven intoxicado con aspirina (ácido acetilsalicílico) es tratado en emergencias. ¿Qué medida facilita su eliminación urinaria?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Acidificar la orina para mayor concentración de la forma ácida</li>
+      <li>b) Acidificar la orina para favorecer la forma base conjugada</li>
+      <li class="correct">c) Alcalinizar la orina para favorecer la forma base conjugada</li>
+      <li>d) Alcalinizar la orina para concentrar la forma ácida</li>
+    </ul>
+    <div class="explanation">Para que el ácido débil (AAS) sea eliminado por orina debe estar en su forma ionizada (base conjugada A⁻) que no puede reabsorberse. Alcalinizar la orina (con bicarbonato IV) desplaza el equilibrio HA → A⁻ + H⁺ hacia la derecha, aumentando la fracción ionizada en el lumen tubular → atrapamiento urinario del fármaco.</div>
+  </div>
+
+  <!-- Q23 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">23</div><div class="q-text">Niño de 4 años con sed, poliuria, retardo de crecimiento, debilidad muscular, reflejos incrementados, y fracción excretada elevada de calcio Y magnesio con FE de sodio y cloro normales. ¿Cuál es la proteína alterada?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) ROMK</li>
+      <li>b) NKCC2</li>
+      <li>c) CaSR</li>
+      <li class="correct">d) Claudina 16</li>
+    </ul>
+    <div class="explanation">La claudina 16 (y claudina 19) regulan el transporte paracelular de Ca²⁺ y Mg²⁺ en el asa gruesa ascendente de Henle. Su disfunción causa hipomagnesemia e hipercalciuria selectivas (FENa y FECl normales). Clínicamente: nefrocalcinosis, calculos renales e hipomagnesemia.</div>
+  </div>
+
+  <!-- Q24 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">24</div><div class="q-text">Una joven de 20 años tiene flujo urinario de 0.5 L/hora, bebe 2–3 vasos cada hora, pero al restringirle líquidos toda la noche tiene Na sérico 160 mEq/L y osmolaridad urinaria de 80 mOsm/L. ¿Cuál es la causa?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span><span class="tag-rep">REPETIDA ×3</span></div>
+    <ul class="options">
+      <li>a) Sobreingesta compulsiva de agua</li>
+      <li>b) Incremento inapropiado de ADH</li>
+      <li>c) Bloqueo del transportador NKCC</li>
+      <li class="correct">d) Bloqueo del receptor V2</li>
+    </ul>
+    <div class="explanation">Con restricción hídrica, la ADH debe actuar → orina concentrada. Si la osmolaridad urinaria es 80 mOsm/L (muy diluida) pese a hipernatremia sérica (160 mEq/L), los osmorreceptores estimulan ADH pero los riñones no responden = diabetes insípida nefrogénica = bloqueo del receptor V2 (insensibilidad tubular a ADH).</div>
+  </div>
+
+  <!-- Q25 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">25</div><div class="q-text">Un paciente de 40 años con poliuria persistente tiene un defecto en la función de los vasos rectos. ¿Cuál función está comprometida?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Reabsorción de bicarbonato en la médula</li>
+      <li>b) Secreción activa de ADH en la médula</li>
+      <li>c) Transporte activo de Na⁺ y Cl⁻</li>
+      <li class="correct">d) Mantener el gradiente osmótico medular</li>
+    </ul>
+    <div class="explanation">Los vasos rectos funcionan como intercambiadores contracorriente: permiten que solutos y agua se difundan pasivamente entre la sangre y el intersticio medular, manteniendo el gradiente osmótico medular (hasta 1200 mOsm/kg). Sin este gradiente, el riñón no puede concentrar la orina → poliuria hipoosmolar.</div>
+  </div>
+
+  <!-- Q26 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">26</div><div class="q-text">¿Qué acuaporina es estimulada por la ADH en el túbulo colector?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Acuaporina 1, en el túbulo proximal</li>
+      <li>b) Acuaporina 3, en el túbulo colector</li>
+      <li>c) Acuaporina 1, en el tubo colector</li>
+      <li class="correct">d) Acuaporina 2, en el tubo colector</li>
+    </ul>
+    <div class="explanation">La ADH se une al receptor V2 en la membrana basolateral del túbulo colector → activa adenilato ciclasa → AMPc → PKA → fosforila vesículas que contienen AQP2 → inserción de AQP2 en membrana luminal → reabsorción de agua. AQP1 está constitutivamente en TCP y asa delgada descendente.</div>
+  </div>
+
+  <!-- Q27 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">27</div><div class="q-text">Paciente con acidosis metabólica hiperclorémica, pH urinario 5.5, anión GAP urinario negativo. ¿Dónde está la lesión?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Túbulo colector</li>
+      <li>b) Asa de Henle</li>
+      <li class="correct">c) Túbulo contorneado proximal</li>
+      <li>d) Células intercaladas del TCD</li>
+    </ul>
+    <div class="explanation">AG urinario negativo indica presencia de amonio urinario (lo que "falta" entre Na+K vs Cl es NH4+) = nefrona distal funciona (acidifica bien). pH urinario 5.5 también confirma que el TCD/colector puede secretar H+. Por exclusión: el problema es proximal = falla en reabsorción de HCO₃⁻ → ATR tipo II.</div>
+  </div>
+
+  <!-- Q28 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">28</div><div class="q-text">Un joven ingiere 400g de carne a la parrilla. ¿Qué transportador debe aumentar su función para restablecer el equilibrio ácido-base?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span><span class="tag-rep">REPETIDA ×3</span></div>
+    <ul class="options">
+      <li>a) NHE3</li>
+      <li>b) H-ATPasa</li>
+      <li>c) SGLT2</li>
+      <li class="correct">d) Pendrina</li>
+    </ul>
+    <div class="explanation">La digestión proteica genera HCl gástrico → produce HCO₃⁻ en sangre = alcalosis metabólica postprandial transitoria. Para corregirla, el riñón debe eliminar HCO₃⁻. La pendrina (intercambiador Cl⁻/HCO₃⁻ apical en células intercaladas beta del TCD/colector) secreta HCO₃⁻ al lumen → se elimina en la orina.</div>
+  </div>
+
+  <!-- Q29 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">29</div><div class="q-text">¿Dónde se realiza la síntesis de calcitriol (1,25-dihidroxicolecalciferol)?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Asa de Henle</li>
+      <li>b) Túbulo colector</li>
+      <li class="correct">c) Túbulo contorneado proximal</li>
+      <li>d) Glomérulo renal</li>
+    </ul>
+    <div class="explanation">La enzima 1α-hidroxilasa convierte 25-hidroxicolecalciferol en calcitriol (forma activa de vitamina D) a nivel del TCP. Esta enzima se activa por PTH, hipocalcemia e hipofosfatemia. El calcitriol aumenta absorción intestinal de calcio y fósforo.</div>
+  </div>
+
+  <!-- Q30 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">30</div><div class="q-text">Con respecto a las relaciones vasculares renales, señale lo correcto:</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">ANATOMÍA</span></div>
+    <ul class="options">
+      <li>a) La vena renal izquierda cruza por detrás de la aorta</li>
+      <li>b) La vena renal izquierda cruza por detrás de la arteria mesentérica inferior</li>
+      <li>c) La arteria renal derecha cruza por delante de la vena cava</li>
+      <li class="correct">d) La vena renal izquierda cruza por delante de la aorta abdominal</li>
+    </ul>
+    <div class="explanation">La vena renal izquierda tiene mayor longitud (7–8 cm) que la derecha (2–3 cm) porque debe cruzar la línea media. Se ubica ANTERIOR a la aorta abdominal, discurriendo por la "pinza aorto-mesentérica superior" (entre la aorta y la arteria mesentérica superior).</div>
+  </div>
+
+  <!-- Q31 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">31</div><div class="q-text">Una mujer con fractura de pelvis desarrolla parálisis vesical (incapacidad de miccionar). ¿Cuál nervio fue más probablemente dañado?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">ANATOMÍA/NEUROLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Nervio hipogástrico superior</li>
+      <li>b) Nervio esplácnico lumbar</li>
+      <li>c) Nervio esplácnico sacro</li>
+      <li class="correct">d) Nervio esplácnico pélvico</li>
+    </ul>
+    <div class="explanation">El nervio esplácnico pélvico contiene fibras parasimpáticas de S2–S4. Estas son las fibras motoras del músculo detrusor (contracción vesical para miccionar). En fracturas pélvicas, la lesión de estas fibras impide la contracción vesical = retención urinaria. Los nervios hipogástricos (simpáticos) relajan el detrusor.</div>
+  </div>
+
+  <!-- Q32 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">32</div><div class="q-text">Calcular el balance de sodio de un paciente que ingiere 5.85 g de NaCl/día y orina 2 L/día con [Na⁺] urinario de 45 mEq/L:</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA – CÁLCULO</span></div>
+    <ul class="options">
+      <li>a) −10 mEq</li>
+      <li>b) 0 mEq</li>
+      <li>c) +5 mEq</li>
+      <li class="correct">d) +10 mEq</li>
+    </ul>
+    <div class="explanation">Ingreso: 5850 mg ÷ 58.5 g/mol = 100 mEq Na/día. Egreso: 2 L/día × 45 mEq/L = 90 mEq/día. Balance = 100 − 90 = +10 mEq/día (balance positivo de sodio → tendencia a retener Na y agua).</div>
+  </div>
+
+  <!-- Q33 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">33</div><div class="q-text">Un paciente con leucemia y lisis tumoral tiene niveles muy elevados de ácido úrico y cristales en orina. ¿Cuál es la conducta más adecuada?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA CLÍNICA</span></div>
+    <ul class="options">
+      <li>a) Diuréticos tiazídicos para bloquear NCC</li>
+      <li>b) Restringir líquidos por riesgo de necrosis tubular</li>
+      <li>c) Mantener orina ácida para prevenir infecciones</li>
+      <li class="correct">d) Hidratación enérgica con aporte de bicarbonato</li>
+    </ul>
+    <div class="explanation">El ácido úrico precipita en pH ácido. La estrategia es: 1) Hidratación intensa para aumentar el flujo urinario y diluir el ácido úrico. 2) Alcalinización con bicarbonato IV para elevar el pH urinario &gt;7.0, lo que mantiene el ácido úrico en su forma ionizada (urato) que es soluble y no precipita. Restringir líquidos sería catastrófico.</div>
+  </div>
+
+  <!-- Q34 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">34</div><div class="q-text">Una joven con falla renal aguda por mordedura de araña presenta hiperkalemia de 6.8 mEq/L. ¿Qué medida NO ayudaría a disminuir temporalmente el potasio sérico?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA CLÍNICA</span></div>
+    <ul class="options">
+      <li>a) Administrar bicarbonato de sodio</li>
+      <li>b) Infusión de glucosa + insulina</li>
+      <li>c) Administrar agonistas β2 (salbutamol)</li>
+      <li class="correct">d) Forzar diuresis con bloqueador de canal ENaC</li>
+    </ul>
+    <div class="explanation">HCO₃⁻ alcaliniza → K⁺ entra a células. Insulina y β2 activan Na/K-ATPasa → K⁺ al intracelular. ENaC permite entrada de Na⁺ en células principales del colector → crea electronegativi dad luminal que arrastra K⁺ al lumen = EXCRECIÓN de K⁺. Pero en falla renal aguda anúrica, bloquear ENaC no produce diuresis y sería contraproducente.</div>
+  </div>
+
+  <!-- Q35 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">35</div><div class="q-text">Paciente psiquiátrico que ingiere 7 litros de agua pura en pocas horas. ¿Qué esperaría encontrar?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Secreción incrementada de ADH</li>
+      <li>b) Hipernatremia con orina concentrada</li>
+      <li>c) Retención de urea en el intersticio medular</li>
+      <li class="correct">d) Pérdida de urea por la orina y lavado medular</li>
+    </ul>
+    <div class="explanation">Sobrecarga acuosa → ↓osmolaridad sérica → suprime ADH → sin ADH los canales UT2 de urea en el colector no se activan → la urea no se reabsorbe → se excreta por orina → el intersticio medular pierde urea = "lavado medular" → capacidad máxima de concentración urinaria disminuye transitoriamente.</div>
+  </div>
+
+  <!-- Q36 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">36</div><div class="q-text">Paciente con función renal normal y glucosa sérica normal. ¿Cuánto se espera que sea el aclaramiento de glucosa?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Igual a la TFG</li>
+      <li>b) Igual al FPR</li>
+      <li>c) Mayor que la TFG</li>
+      <li class="correct">d) Cero</li>
+    </ul>
+    <div class="explanation">El aclaramiento de glucosa = (U×V)/P. Con glucosa normal (&lt;180 mg/dL) y Tm intacto, toda la glucosa filtrada se reabsorbe → no aparece glucosa en orina → volumen de plasma depurado de glucosa = 0 ml/min. Aclaramiento = 0.</div>
+  </div>
+
+  <!-- Q37 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">37</div><div class="q-text">¿Cuál de las siguientes estructuras es responsable de eliminar el exceso de volumen intersticial hacia la circulación en la pirámide renal (función análoga a un linfático)?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">HISTOLOGÍA/ANATOMÍA</span></div>
+    <ul class="options">
+      <li>a) Vasa recta descendente</li>
+      <li>b) Arteria arcuata</li>
+      <li>c) Capilares peritubulares</li>
+      <li class="correct">d) Vasa recta ascendente</li>
+    </ul>
+    <div class="explanation">Los vasa recta ascendentes (venosos) tienen una presión oncótica alta al salir de la médula porque han perdido agua hacia el intersticio hiperosmótico. Esta alta presión oncótica les permite absorber el exceso de fluido intersticial medular, funcionando como vasos linfáticos en una zona sin linfáticos verdaderos.</div>
+  </div>
+
+  <!-- Q38 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">38</div><div class="q-text">Un neonato de 7 días, peso 2.5 kg (nació con 3 kg), no ha orinado en 24 horas y su Na sérico es 170 mEq/L. ¿En qué compartimento predomina la deshidratación?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Extracelular exclusivamente</li>
+      <li>b) Intravascular</li>
+      <li>c) Compartimento tercer espacio</li>
+      <li class="correct">d) Intracelular</li>
+    </ul>
+    <div class="explanation">Hipernatremia (Na=170) → hiperosmolaridad del extracelular → el agua sale del intracelular hacia el extracelular por ósmosis → la deshidratación predomina en el espacio intracelular. Las células se "contraen". Clínicamente: letargia, irritabilidad, convulsiones por encogimiento celular neuronal.</div>
+  </div>
+
+  <!-- Q39 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">39</div><div class="q-text">Un paciente monorreno con estenosis de su única arteria renal recibe un IECA. ¿Qué ocurre con la TFG?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Aumenta significativamente</li>
+      <li>b) No varía por autorregulación</li>
+      <li>c) Aumenta y el FPR disminuye</li>
+      <li class="correct">d) Disminuye la TFG</li>
+    </ul>
+    <div class="explanation">Con estenosis de arteria renal → baja presión de perfusión → se activa RAAS → angiotensina II vasoconstricción preferente de arteriola EFERENTE → mantiene la TFG. Si se bloquea con IECA: sin vasoconst. eferente, la presión de filtración cae → TFG disminuye drásticamente → falla renal aguda. Los IECAs están contraindicados en estenosis bilateral o monorreno.</div>
+  </div>
+
+  <!-- Q40 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">40</div><div class="q-text">Un paciente pierde sodio en la orina por falla de la reabsorción en el asa gruesa ascendente. ¿Qué ocurre con la TFG y el FPR al vasoconstriñir SOLO la arteriola eferente?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) TFG no varía, FPR no varía</li>
+      <li>b) TFG disminuye, FPR aumenta</li>
+      <li>c) TFG y FPR aumentan</li>
+      <li class="correct">d) TFG aumenta, FPR disminuye</li>
+    </ul>
+    <div class="explanation">Vasoconstricción eferente → retiene sangre en el capilar glomerular → aumenta presión hidrostática capilar (Pc) → ↑TFG. Al mismo tiempo, menos sangre sale del glomérulo → FPR disminuye. También: FF aumenta, y la presión oncótica del capilar peritubular aumenta → favorece reabsorción tubular.</div>
+  </div>
+
+  <!-- Q41 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">41</div><div class="q-text">¿Cuál de las siguientes sustancias es ejemplo de transporte activo secundario en el túbulo proximal?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Na/H (NHE3)</li>
+      <li>b) H-ATPasa</li>
+      <li class="correct">c) SGLT2</li>
+      <li>d) Na/K ATPasa</li>
+    </ul>
+    <div class="explanation">El SGLT2 (cotransportador Na-glucosa tipo 2) lleva glucosa del lumen al interior de la célula usando el gradiente de Na⁺ creado por la bomba Na/K-ATPasa (que consume ATP directamente). El SGLT2 en sí no gasta ATP = transporte activo secundario. La Na/K-ATPasa es transporte activo primario.</div>
+  </div>
+
+  <!-- Q42 -->
+  <div class="q-block priority">
+    <div class="q-header"><div class="q-num gold">42</div><div class="q-text">¿En cuál de las siguientes estructuras ya NO se encuentran células intercaladas?</div></div>
+    <div class="q-tags"><span class="tag-high">★ ALTA PRIORIDAD</span><span class="tag-fis">HISTOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Segundo tercio del TCD</li>
+      <li>b) Túbulo conector</li>
+      <li>c) Túbulo colector cortical</li>
+      <li class="correct">d) Túbulo colector papilar (de Bellini)</li>
+    </ul>
+    <div class="explanation">Las células intercaladas aparecen en la segunda mitad del TCD, continúan en el túbulo conector y el túbulo colector cortical y medular externo. Desaparecen en el túbulo colector papilar (ducto de Bellini), donde predominan las células principales y células de tipo B del colector.</div>
+  </div>
+
+  <!-- HISTORICAL QUESTIONS Q43-Q60 -->
+  <hr class="divider">
+  <h3>📚 Preguntas de Temas Históricos Frecuentes (Q43–Q60)</h3>
+
+  <!-- Q43 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">43</div><div class="q-text">¿Dónde se ubican los corpúsculos renales cuando se observan en la "médula renal" de un corte histológico?</div></div>
+    <div class="q-tags"><span class="tag-rep">REPETIDA ×3</span><span class="tag-fis">HISTOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) En las pirámides renales</li>
+      <li>b) En la médula interna</li>
+      <li class="correct">c) En la columna renal</li>
+      <li>d) En la corteza profunda</li>
+    </ul>
+    <div class="explanation">Las columnas renales (de Bertin) son prolongaciones de corteza que se introducen entre las pirámides. Los corpúsculos renales pertenecen a la corteza, por lo que al verlos "en la médula" están en las columnas renales. Las pirámides solo contienen túbulos y vasos rectos.</div>
+  </div>
+
+  <!-- Q44 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">44</div><div class="q-text">¿Cuál es el origen embriológico de las células mesangiales renales?</div></div>
+    <div class="q-tags"><span class="tag-rep">REPETIDA ×3</span><span class="tag-fis">EMBRIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Yema ureteral</li>
+      <li>b) Conducto mesonéfrico</li>
+      <li class="correct">c) Blastema metanéfrico</li>
+      <li>d) Cresta neural</li>
+    </ul>
+    <div class="explanation">Las células mesangiales derivan del blastema metanéfrico (mesodermo metanéfrico). Son células especializadas con capacidad contráctil (regulan la superficie de filtración) y fagocítica, similares a los pericitos/macrófagos. El blastema metanéfrico da origen a toda la nefrona hasta el túbulo colector.</div>
+  </div>
+
+  <!-- Q45 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">45</div><div class="q-text">Las nefronas yuxtamedulares se caracterizan por:</div></div>
+    <div class="q-tags"><span class="tag-rep">REPETIDA ×3</span><span class="tag-fis">HISTOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Tener el segmento descendente delgado en la corteza</li>
+      <li>b) Tener el segmento ascendente grueso en la médula interna</li>
+      <li class="correct">c) Tener el segmento ascendente delgado del asa; visible en la médula interna</li>
+      <li>d) Tener un asa de Henle muy corta</li>
+    </ul>
+    <div class="explanation">Las nefronas yuxtamedulares tienen asas largas que llegan hasta la médula interna. Su característica distintiva es poseer un segmento ascendente DELGADO (a diferencia de las corticales que no lo tienen). La presencia del segmento ascendente delgado en la médula interna es el marcador histológico de las nefronas yuxtamedulares.</div>
+  </div>
+
+  <!-- Q46 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">46</div><div class="q-text">Calcular el transporte máximo de glucosa de un paciente si su Tm es 240 mg/min y la TFG es 120 ml/min. ¿Cuál es la concentración máxima teórica de glucosa sérica para que no haya glucosuria?</div></div>
+    <div class="q-tags"><span class="tag-rep">REPETIDA ×4</span><span class="tag-fis">FISIOLOGÍA – CÁLCULO</span></div>
+    <ul class="options">
+      <li>a) 180 mg/dL</li>
+      <li>b) 300 mg/dL</li>
+      <li c="correct">c) 375 mg/dL</li>
+      <li class="correct">d) 200 mg/dL</li>
+    </ul>
+    <div class="explanation">Para que no haya glucosuria: carga filtrada ≤ Tm. TFG × [glucosa] ≤ 240 mg/min. 120 ml/min × [glucosa] = 240 → [glucosa] = 240/120 = 2 mg/ml = 200 mg/dL. Por encima de este valor teórico (en la práctica el umbral real es ~180 mg/dL por el umbral de saciedad) aparece glucosuria.</div>
+  </div>
+
+  <!-- Q47 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">47</div><div class="q-text">¿Cuál es el estímulo principal para la secreción de péptido natriurético auricular (ANP)?</div></div>
+    <div class="q-tags"><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Aumento de la osmolaridad plasmática</li>
+      <li>b) Disminución de la presión arterial sistémica</li>
+      <li>c) Aumento de la contractilidad cardíaca</li>
+      <li class="correct">d) Aumento del volumen sanguíneo venoso y presión en aurícula derecha</li>
+    </ul>
+    <div class="explanation">El ANP se libera de los cardiomiocitos auriculares al estirarse la pared auricular por aumento del retorno venoso (hipervolemia). Actúa en el túbulo colector medular inhibiendo la reabsorción de Na → natriuresis. También inhibe la renina y la aldosterona. El estímulo es el estiramiento auricular, no la presión arterial directamente.</div>
+  </div>
+
+  <!-- Q48 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">48</div><div class="q-text">Un niño de 18 meses con bajo peso y talla, vómitos frecuentes: pH 7.2, pCO₂ 30, HCO₃⁻ 14, Na 136, Cl 112, pH urinario 5.5, Na urinario 30, K urinario 20, Cl urinario 70. ¿Lesión a nivel?</div></div>
+    <div class="q-tags"><span class="tag-rep">REPETIDA ×4</span><span class="tag-fis">FISIOLOGÍA CLÍNICA</span></div>
+    <ul class="options">
+      <li>a) Asa de Henle</li>
+      <li>b) Túbulo colector</li>
+      <li>c) TCD</li>
+      <li class="correct">d) TCP (túbulo contorneado proximal)</li>
+    </ul>
+    <div class="explanation">Acidosis metabólica con AG urinario = 30+20−70 = −20 (negativo = hay amonio = nefrona distal funciona bien). pH urinario 5.5 = puede acidificar (función distal OK). Conclusión: problema proximal en reabsorción de HCO₃⁻ = ATR tipo II. Además: Na+ urinario elevado relativo con vómitos sugiere pérdida proximal de bicarbonato.</div>
+  </div>
+
+  <!-- Q49 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">49</div><div class="q-text">La parathormona tiene efecto renal. Su liberación favorece:</div></div>
+    <div class="q-tags"><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Aumenta excreción renal de calcio</li>
+      <li>b) Disminuye absorción intestinal de calcio</li>
+      <li>c) Disminuye excreción renal y aumenta absorción intestinal de fósforo</li>
+      <li class="correct">d) Favorece excreción renal de fósforo y promueve formación de calcitriol</li>
+    </ul>
+    <div class="explanation">PTH tiene 3 efectos renales: 1) Fosfaturia (inhibe reabsorción de fosfato en TCP). 2) Hipocalciuria (aumenta reabsorción de Ca²⁺ en TCD). 3) Activa la 1α-hidroxilasa en TCP → produce calcitriol. El calcitriol aumenta la absorción intestinal de calcio y fósforo a largo plazo.</div>
+  </div>
+
+  <!-- Q50 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">50</div><div class="q-text">¿Qué característica comparten los cálices, la pelvis renal y los uréteres histológicamente?</div></div>
+    <div class="q-tags"><span class="tag-rep">REPETIDA ×3</span><span class="tag-fis">HISTOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Epitelio escamoso estratificado</li>
+      <li>b) Epitelio cúbico simple</li>
+      <li>c) Epitelio cilíndrico pseudoestratificado</li>
+      <li class="correct">d) Epitelio polimorfo de transición (urotelio)</li>
+    </ul>
+    <div class="explanation">Todo el sistema excretor desde los cálices menores hasta la vejiga (y parte proximal de la uretra) está revestido por epitelio de transición o urotelio. Este epitelio especial puede cambiar su morfología según el grado de distensión: aplanado cuando distendido, cúbico/columnar cuando relajado. Las células superficiales son las características células paraguas (umbrella cells).</div>
+  </div>
+
+  <!-- Q51 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">51</div><div class="q-text">Una persona con alta ingesta de potasio en su dieta: ¿A qué nivel se espera la mayor SECRECIÓN de potasio?</div></div>
+    <div class="q-tags"><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Túbulo proximal</li>
+      <li>b) Asa delgada ascendente de Henle</li>
+      <li>c) Segmento 1 del TCD</li>
+      <li class="correct">d) Túbulos colectores</li>
+    </ul>
+    <div class="explanation">La secreción de K⁺ ocurre principalmente en las células principales del TCD tardío y el túbulo colector cortical, mediada por canales ROMK y BK, estimulados por aldosterona (que responde a la hiperkalemia). La reabsorción de K⁺ es mayor en el TCP (~67%) pero la SECRECIÓN neta es en el colector. La excreción urinaria de K⁺ refleja lo secretado en el colector.</div>
+  </div>
+
+  <!-- Q52 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">52</div><div class="q-text">Un paciente con hemorragia digestiva activa (pálido, taquicárdico) tiene angiotensina II elevada. ¿Cuál es el efecto de la Ang II sobre TFG y FPR?</div></div>
+    <div class="q-tags"><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) TFG disminuye, FPR aumenta</li>
+      <li>b) TFG y FPR disminuyen por igual</li>
+      <li class="correct">c) TFG aumenta, FPR disminuye</li>
+      <li>d) TFG y FPR no varían</li>
+    </ul>
+    <div class="explanation">La angiotensina II produce vasoconstricción preferente de la arteriola eferente (más sensible que la aferente). Esto: ↑presión hidrostática capilar glomerular → ↑TFG. Pero también: ↓flujo de salida del glomérulo → ↓FPR total. Resultado: ↑FF (TFG/FPR). Es el mecanismo que preserva la función glomerular en hipovolemia.</div>
+  </div>
+
+  <!-- Q53 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">53</div><div class="q-text">¿Cuál parte del riñón presenta corpúsculos, túbulos contorneados proximales y distales, ADEMÁS de mucosa de urotelio?</div></div>
+    <div class="q-tags"><span class="tag-rep">REPETIDA ×2</span><span class="tag-fis">HISTOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Corteza renal</li>
+      <li>b) Médula renal</li>
+      <li>c) Papila renal</li>
+      <li class="correct">d) Columna renal</li>
+    </ul>
+    <div class="explanation">La corteza renal tiene corpúsculos y túbulos pero NO tiene urotelio. Las columnas de Bertin son extensiones de corteza dentro de la médula que SÍ tienen todas las estructuras corticales (corpúsculos, TCP, TCD) más el urotelio de los cálices que pasa por ellas. Es la única zona con esa combinación.</div>
+  </div>
+
+  <!-- Q54 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">54</div><div class="q-text">Un familiar muestra resultados de laboratorio: glucosa en orina 1+, albúmina en orina 1+, pH urinario 6.0, glucosa en sangre 90 mg/dL. ¿Qué concluye?</div></div>
+    <div class="q-tags"><span class="tag-fis">FISIOLOGÍA CLÍNICA</span></div>
+    <ul class="options">
+      <li>a) Hallazgos se deben a glucosa en sangre elevada</li>
+      <li>b) Probablemente la TFG está aumentada</li>
+      <li>c) La función del túbulo distal está alterada</li>
+      <li class="correct">d) Tiene problemas con la función tubular proximal</li>
+    </ul>
+    <div class="explanation">Glucosa en orina con glucemia NORMAL (90 mg/dL) es glucosuria renal: el TCP no puede reabsorber glucosa aunque la carga filtrada sea normal. Albuminuria también indica falla en reabsorción de proteínas pequeñas por el TCP. La combinación glucosuria + proteinuria leve + glucemia normal = disfunción del TCP (síndrome de Fanconi en su forma incompleta).</div>
+  </div>
+
+  <!-- Q55 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">55</div><div class="q-text">La capa interna de la cápsula renal se caracteriza por tener:</div></div>
+    <div class="q-tags"><span class="tag-fis">HISTOLOGÍA/ANATOMÍA</span></div>
+    <ul class="options">
+      <li>a) Capa mesotelial</li>
+      <li>b) Fibroblastos inactivos</li>
+      <li>c) Células adiposas</li>
+      <li class="correct">d) Capacidad contráctil (miofibroblastos)</li>
+    </ul>
+    <div class="explanation">La cápsula renal tiene una capa externa fibrosa (sin capacidad contráctil) y una capa interna con miofibroblastos que le dan capacidad contráctil. Esta capa interna se continúa con el tejido intersticial renal. La capa externa mesotelial cubre la superficie externa. La capacidad contráctil interna ayuda a mantener la presión intrarrenal.</div>
+  </div>
+
+  <!-- Q56 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">56</div><div class="q-text">Un hombre con vómitos de contenido gástrico persistente por 4 días presenta: hipokalemia, hipocloremia, Na normal, taquicardia y deshidratación. ¿Primera medida?</div></div>
+    <div class="q-tags"><span class="tag-fis">FISIOLOGÍA CLÍNICA</span></div>
+    <ul class="options">
+      <li>a) Reponer potasio IV directamente</li>
+      <li>b) Solución hipotónica para corregir hiponatremia</li>
+      <li>c) Suspender la dieta y reponer oral</li>
+      <li class="correct">d) Administrar solución isotónica de NaCl IV</li>
+    </ul>
+    <div class="explanation">Los vómitos producen pérdida de HCl → alcalosis metabólica hipoclorémica. La deshidratación activa el RAAS → aldosterona → mayor secreción de K⁺ y H⁺ → empeora la hipocalemia y alcalosis. La PRIORIDAD es reponer volumen con solución isotónica (NaCl 0.9%) para romper el ciclo de activación del RAAS. Corregir la hipovolemia primero, luego el K⁺.</div>
+  </div>
+
+  <!-- Q57 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">57</div><div class="q-text">La bifurcación temprana de la yema ureteral produce:</div></div>
+    <div class="q-tags"><span class="tag-rep">REPETIDA ×2</span><span class="tag-fis">EMBRIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Agenesia renal unilateral</li>
+      <li>b) Riñón poliquístico</li>
+      <li class="correct">c) Riñón bífido</li>
+      <li>d) Doble sistema completo</li>
+    </ul>
+    <div class="explanation">La bifurcación temprana de la yema ureteral (antes de introducirse en el blastema) produce un riñón con dos sistemas colectores que se unen en un solo uréter = riñón bífido. Si son dos yemas ureterales independientes desde el inicio = doble sistema completo (dos uréteres separados hasta la vejiga). Si la bifurcación es tardía = pelvis bífida.</div>
+  </div>
+
+  <!-- Q58 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">58</div><div class="q-text">¿Cuál es la consecuencia renal esperada en un paciente con hipervolemia sobre la secreción de adenosina?</div></div>
+    <div class="q-tags"><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Disminución de adenosina para vasodilatar</li>
+      <li>b) La adenosina no cambia en hipervolemia</li>
+      <li>c) Adenosina vasodilatadora para aumentar TFG</li>
+      <li class="correct">d) Incremento de adenosina para disminuir la TFG (vasoconstricción aferente)</li>
+    </ul>
+    <div class="explanation">En hipervolemia → mayor flujo tubular distal → mayor entrega de NaCl a la macula densa → la macula densa estimula la liberación de adenosina → la adenosina A1 vasoconstricción de la arteriola AFERENTE → ↓TFG (feedback tubuloglomerular negativo). Este mecanismo protege al riñón del exceso de filtración cuando hay alta carga de solutos.</div>
+  </div>
+
+  <!-- Q59 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">59</div><div class="q-text">En un paciente con diarrea crónica y acidosis metabólica con AG sérico normal, ¿cuál sería el anión GAP urinario esperado?</div></div>
+    <div class="q-tags"><span class="tag-fis">FISIOLOGÍA CLÍNICA</span></div>
+    <ul class="options">
+      <li>a) AG urinario positivo (alto)</li>
+      <li>b) AG urinario igual a cero</li>
+      <li>c) AG urinario variable sin significado</li>
+      <li class="correct">d) AG urinario negativo (amonio elevado)</li>
+    </ul>
+    <div class="explanation">AG urinario = Na⁺U + K⁺U − Cl⁻U. En acidosis metabólica por diarrea (pérdida de HCO₃⁻ por heces), el riñón intacto responde aumentando la síntesis de NH4⁺ y lo excreta junto con Cl⁻ → Cl⁻ urinario muy alto → AG urinario muy negativo. AG urinario negativo = buena función renal = acidosis de origen extrarrenal (intestinal). AG urinario positivo = falla renal en producir amonio = ATR tipo I o IV.</div>
+  </div>
+
+  <!-- Q60 -->
+  <div class="q-block">
+    <div class="q-header"><div class="q-num">60</div><div class="q-text">Un paciente con infección del tracto urinario recurrente presenta fracción excretada de magnesio aumentada y fracción excretada de calcio normal. ¿A nivel de qué transportador sospecharía el problema?</div></div>
+    <div class="q-tags"><span class="tag-fis">FISIOLOGÍA</span></div>
+    <ul class="options">
+      <li>a) Claudina 16</li>
+      <li>b) NKCC2</li>
+      <li>c) TRPV5</li>
+      <li class="correct">d) TRPM6</li>
+    </ul>
+    <div class="explanation">TRPM6 es el canal de reabsorción de Mg²⁺ en el TCD. Su disfunción genera hipomagnesemia con magnesuria elevada pero con calciuria NORMAL (porque el calcio se reabsorbe normalmente por TRPV5 que está intacto). Si fuera claudina 16, también se perdería Ca²⁺. Si fuera NKCC2, habría pérdida de múltiples iones. FE-Mg alta + FE-Ca normal = TRPM6.</div>
+  </div>
+
+  <div class="card" style="margin-top:32px;border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.05);">
+    <h3 style="margin-top:0;color:#6ee7b7">✅ Resumen del Banqueo Predicho</h3>
+    <ul style="list-style:disc;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:0.88rem;">
+      <li>📌 <strong>Q1–Q42</strong> (★ Oro): Directamente del banco 2024 o variantes directas — representa el 70% predicho</li>
+      <li>📌 <strong>Q43–Q60</strong>: Temas históricos de alta frecuencia acumulada — representa el 30% predicho</li>
+      <li>🔁 Las preguntas de cálculo (Q13, Q14, Q15, Q32, Q46) aparecen con los MISMOS valores numéricos que en los banqueos — memorizarlas como plantillas</li>
+      <li>⭐ La pregunta Q17 (receptor aldosterona) es la más repetida de toda la historia (6 años) — NUNCA falla</li>
+      <li>🧬 Equilibrio ácido-base + transportadores tubulares = 40% del examen por sí solos</li>
+    </ul>
+  </div>
+</section>
+
+<script>
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.05 });
+document.querySelectorAll('.rank-item, .q-block, .fis-card, .pred-item').forEach(el => {
+  el.classList.add('scroll-fade');
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
